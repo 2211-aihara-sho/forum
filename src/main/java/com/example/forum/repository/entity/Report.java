@@ -15,10 +15,10 @@ import lombok.Setter;
 @Entity
 @Table(name = "report")
 public class Report {
-    @Id
-    @Column
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    @Column
-    private String content;
+	@Id
+	@Column
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
+	@Column
+	private String content;
 }
