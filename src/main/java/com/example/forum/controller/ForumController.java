@@ -1,6 +1,8 @@
 package com.example.forum.controller;
 
+import com.example.forum.controller.form.CommentForm;
 import com.example.forum.controller.form.ReportForm;
+import com.example.forum.service.CommentService;
 import com.example.forum.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,8 @@ import java.util.List;
 public class ForumController {
 	@Autowired
 	ReportService reportService;
+	@Autowired
+	CommentService commentService;
 
 	/*
 	 * 投稿内容表示処理
@@ -22,10 +26,20 @@ public class ForumController {
 		ModelAndView mav = new ModelAndView();
 		// 投稿を全件取得
 		List<ReportForm> contentData = reportService.findAllReport();
+		// コメントを全件取得
+		List<CommentForm> commentData = commentService.findAllComment();
 		// 画面遷移先を指定
 		mav.setViewName("/top");
 		// 投稿データオブジェクトを保管
 		mav.addObject("contents", contentData);
+		// コメントデータオブジェクトを保管
+		mav.addObject("comments", commentData);
+
+		// form用の空のentityを準備
+		CommentForm commentForm = new CommentForm();
+		// 準備した空のFormを保管
+		mav.addObject("CommentFormModel", commentForm);
+
 		return mav;
 	}
 
@@ -42,6 +56,17 @@ public class ForumController {
 		// 準備した空のFormを保管
 		mav.addObject("formModel", reportForm);
 		return mav;
+	}
+
+	/*
+	 * 新規投稿処理
+	 */
+	@PostMapping("/add")
+	public ModelAndView addContent(@ModelAttribute("formModel") ReportForm reportForm) {
+		// 投稿をテーブルに格納
+		reportService.saveReport(reportForm);
+		// rootへリダイレクト
+		return new ModelAndView("redirect:/");
 	}
 
 	/*
@@ -84,15 +109,16 @@ public class ForumController {
 		return new ModelAndView("redirect:/");
 	}
 
-
 	/*
-	 * 新規投稿処理
+	 * コメント返信処理
 	 */
-	@PostMapping("/add")
-	public ModelAndView addContent(@ModelAttribute("formModel") ReportForm reportForm) {
+	@PostMapping("/comment/add")
+	public ModelAndView addComment(@ModelAttribute("CommentFormModel") CommentForm commentForm,Integer report_id) {
 		// 投稿をテーブルに格納
-		reportService.saveReport(reportForm);
+		commentForm.setReport_id(report_id);
+		commentService.saveComment(commentForm);
 		// rootへリダイレクト
 		return new ModelAndView("redirect:/");
 	}
+
 }

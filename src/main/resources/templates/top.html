@@ -33,6 +33,28 @@
 				<input type="submit" value="削除">
 			</form>
 		</div>
+
+		<div class="comment-form">
+			<form method="post" action="/comment/add" th:object="${CommentFormModel}">
+				<div class="form-area">
+					<label>コメント内容</label>
+					<input type="hidden" name="report_id" th:value="${content.id}">
+					<textarea class="tweet-box" th:field="*{comment}" size="20" maxlength="200"/></textarea><br/>
+					<input type="submit" value="投稿"/>
+				</div>
+			</form>
+		</div>
+		<div class="comment-icon" th:each="comment : ${comments}">
+			<div th:if="${comment.report_id == content.id}">
+				<div>
+					返信ID : <span th:text="${comment.id}"/>
+				</div>
+				<div class="text">
+					返信内容 : <span th:text="${comment.comment}"/>
+				</div>
+			</div>
+		</div>
+
 	</div>
 </div>
 </body>
