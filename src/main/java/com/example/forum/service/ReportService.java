@@ -43,7 +43,6 @@ public class ReportService {
 	 */
 	public void saveReport(ReportForm reqReport) {
 		Report saveReport = setReportEntity(reqReport);
-
 		reportRepository.save(saveReport);
 	}
 
@@ -55,5 +54,19 @@ public class ReportService {
 		report.setId(reqReport.getId());
 		report.setContent(reqReport.getContent());
 		return report;
+	}
+
+	public void deleteReport(Integer id) {
+		reportRepository.deleteById(id);
+	}
+
+	/*
+	 * レコード1件取得
+	 */
+	public ReportForm editReport(Integer id) {
+		List<Report> results = new ArrayList<>();
+		results.add((Report) reportRepository.findById(id).orElse(null));
+		List<ReportForm> reports = setReportForm(results);
+		return reports.get(0);
 	}
 }

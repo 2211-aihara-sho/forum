@@ -4,9 +4,7 @@ import com.example.forum.controller.form.ReportForm;
 import com.example.forum.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -45,6 +43,47 @@ public class ForumController {
 		mav.addObject("formModel", reportForm);
 		return mav;
 	}
+
+	/*
+	 * 投稿削除処理
+	 */
+	@DeleteMapping("/delete/{id}")
+	public ModelAndView deleteContent(@PathVariable Integer id) {
+		// 投稿をテーブルに格納
+		reportService.deleteReport(id);
+		// rootへリダイレクト
+		return new ModelAndView("redirect:/");
+	}
+
+	/*
+	 * 編集画面表示処理
+	 */
+	@GetMapping("/edit/{id}")
+	public ModelAndView editContent(@PathVariable Integer id) {
+		ModelAndView mav = new ModelAndView();
+		// 編集する投稿を取得
+		ReportForm report = reportService.editReport(id);
+		// 編集する投稿をセット
+		mav.addObject("formModel", report);
+		// 画面遷移先を指定
+		mav.setViewName("/edit");
+		return mav;
+	}
+
+	/*
+	 * 編集処理
+	 */
+	@PutMapping("/update/{id}")
+	public ModelAndView updateContent(@PathVariable Integer id, @ModelAttribute("formModel") ReportForm report) {
+
+		// UrlParameterのidを更新するentityにセット
+		report.setId(id);
+		// 編集した投稿を更新
+		reportService.saveReport(report);
+		// rootへリダイレクト
+		return new ModelAndView("redirect:/");
+	}
+
 
 	/*
 	 * 新規投稿処理
