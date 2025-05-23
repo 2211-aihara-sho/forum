@@ -53,4 +53,15 @@ public class CommentService {
 		comment.setReport_id(reqComment.getReport_id());
 		return comment;
 	}
+
+	/*
+	 * レコード1件取得
+	 */
+	public CommentForm editComment(Integer id) {
+		List<Comment> results = new ArrayList<>();
+		results.add((Comment) commentRepository.findById(id).orElse(null));
+		List<CommentForm> comments = setCommentForm(results);
+		return comments.get(0);
+	}
+
 }

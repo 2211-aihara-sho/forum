@@ -40,7 +40,7 @@
 					<label>コメント内容</label>
 					<input type="hidden" name="report_id" th:value="${content.id}">
 					<textarea class="tweet-box" th:field="*{comment}" size="20" maxlength="200"/></textarea><br/>
-					<input type="submit" value="投稿"/>
+					<input type="submit" value="返信"/>
 				</div>
 			</form>
 		</div>
@@ -51,6 +51,11 @@
 				</div>
 				<div class="text">
 					返信内容 : <span th:text="${comment.comment}"/>
+				</div>
+				<div class="commentEdit-button">
+					<a th:href="@{/comment/edit/{id}(id=${comment.id})}">
+						<input type="button" value="編集">
+					</a>
 				</div>
 			</div>
 		</div>

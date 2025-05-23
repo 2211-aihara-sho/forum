@@ -34,7 +34,6 @@ public class ForumController {
 		mav.addObject("contents", contentData);
 		// コメントデータオブジェクトを保管
 		mav.addObject("comments", commentData);
-
 		// form用の空のentityを準備
 		CommentForm commentForm = new CommentForm();
 		// 準備した空のFormを保管
@@ -117,6 +116,36 @@ public class ForumController {
 		// 投稿をテーブルに格納
 		commentForm.setReport_id(report_id);
 		commentService.saveComment(commentForm);
+		// rootへリダイレクト
+		return new ModelAndView("redirect:/");
+	}
+
+	/*
+	 * コメント編集画面表示
+	 */
+	@GetMapping("/comment/edit/{id}")
+	public ModelAndView editComment(@PathVariable Integer id) {
+		ModelAndView mav = new ModelAndView();
+		// 編集するコメントを取得
+		CommentForm comment = commentService.editComment(id);
+		// 編集するコメントをセット
+		mav.addObject("commentFormModel", comment);
+		// 画面遷移先を指定
+		mav.setViewName("/commentEdit");
+		return mav;
+	}
+
+	/*
+	 * コメント編集処理
+	 */
+	@PutMapping("/comment/update/{id}")
+	public ModelAndView updateComment (@PathVariable Integer id, @ModelAttribute("commentFormModel") CommentForm comment,Integer report_id) {
+
+		// UrlParameterのidを更新するentityにセット
+		comment.setId(id);
+		comment.setReport_id(report_id);
+		// 編集した投稿を更新
+		commentService.saveComment(comment);
 		// rootへリダイレクト
 		return new ModelAndView("redirect:/");
 	}
