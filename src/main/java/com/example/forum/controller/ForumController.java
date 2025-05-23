@@ -112,9 +112,8 @@ public class ForumController {
 	 * コメント返信処理
 	 */
 	@PostMapping("/comment/add")
-	public ModelAndView addComment(@ModelAttribute("CommentFormModel") CommentForm commentForm,Integer report_id) {
+	public ModelAndView addComment(@ModelAttribute("CommentFormModel") CommentForm commentForm) {
 		// 投稿をテーブルに格納
-		commentForm.setReport_id(report_id);
 		commentService.saveComment(commentForm);
 		// rootへリダイレクト
 		return new ModelAndView("redirect:/");
@@ -139,13 +138,23 @@ public class ForumController {
 	 * コメント編集処理
 	 */
 	@PutMapping("/comment/update/{id}")
-	public ModelAndView updateComment (@PathVariable Integer id, @ModelAttribute("commentFormModel") CommentForm comment,Integer report_id) {
+	public ModelAndView updateComment (@PathVariable Integer id, @ModelAttribute("commentFormModel") CommentForm comment) {
 
 		// UrlParameterのidを更新するentityにセット
 		comment.setId(id);
-		comment.setReport_id(report_id);
 		// 編集した投稿を更新
 		commentService.saveComment(comment);
+		// rootへリダイレクト
+		return new ModelAndView("redirect:/");
+	}
+
+	/*
+	 * コメント削除処理
+	 */
+	@DeleteMapping("/comment/delete/{id}")
+	public ModelAndView deleteComment(@PathVariable Integer id) {
+		// 投稿をテーブルに格納
+		commentService.deleteComment(id);
 		// rootへリダイレクト
 		return new ModelAndView("redirect:/");
 	}

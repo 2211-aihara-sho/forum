@@ -52,10 +52,15 @@
 				<div class="text">
 					返信内容 : <span th:text="${comment.comment}"/>
 				</div>
-				<div class="commentEdit-button">
+				<div class="edit-button">
 					<a th:href="@{/comment/edit/{id}(id=${comment.id})}">
 						<input type="button" value="編集">
 					</a>
+				</div>
+				<div class="delete-button">
+					<form th:action="@{/comment/delete/{id}(id=${comment.id})}" th:method="delete">
+						<input type="submit" value="削除">
+					</form>
 				</div>
 			</div>
 		</div>

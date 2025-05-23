@@ -64,4 +64,7 @@ public class CommentService {
 		return comments.get(0);
 	}
 
+	public void deleteComment(Integer id) {
+		commentRepository.deleteById(id);
+	}
 }
