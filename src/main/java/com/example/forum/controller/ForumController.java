@@ -22,10 +22,10 @@ public class ForumController {
 	 * 投稿内容表示処理
 	 */
 	@GetMapping
-	public ModelAndView top() {
+	public ModelAndView top(@RequestParam(value = "start", required = false) String start,@RequestParam(value = "end", required = false) String end) {
 		ModelAndView mav = new ModelAndView();
-		// 投稿を全件取得
-		List<ReportForm> contentData = reportService.findAllReport();
+		// 投稿を全件取得（日付絞り込みあり）
+		List<ReportForm> contentData = reportService.findByCreatedDateBetween(start, end);
 		// コメントを全件取得
 		List<CommentForm> commentData = commentService.findAllComment();
 		// 画面遷移先を指定

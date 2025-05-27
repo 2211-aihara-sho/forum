@@ -6,8 +6,14 @@ import com.example.forum.repository.entity.Report;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import static org.springframework.util.StringUtils.hasText;
 
 @Service
 public class ReportService {
@@ -15,10 +21,30 @@ public class ReportService {
 	ReportRepository reportRepository;
 
 	/*
-	 * レコード全件取得処理
+	 * レコード全件取得処理（日付絞り込み実装）
 	 */
-	public List<ReportForm> findAllReport() {
-		List<Report> results = reportRepository.findAll();
+	public List<ReportForm> findByCreatedDateBetween(String start, String end) {
+		Date startDate = null;
+		Date endDate = null;
+		try {
+			SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+			if(hasText(start)){
+				startDate =  sdFormat.parse(start + " 00:00:00.000");
+			} else {
+				startDate = sdFormat.parse("2020-01-01 00:00:00.000");
+			}
+
+			if(hasText(end)){
+				endDate = sdFormat.parse(end + " 23:59:59.999");
+			} else {
+				Date date = new Date();
+				String dateTime = sdFormat.format(date);
+				endDate = sdFormat.parse(dateTime +".999");
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		List<Report> results = reportRepository.findByCreatedDateBetween(startDate, endDate);
 		List<ReportForm> reports = setReportForm(results);
 		return reports;
 	}
