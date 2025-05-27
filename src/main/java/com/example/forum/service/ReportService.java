@@ -23,7 +23,7 @@ public class ReportService {
 	/*
 	 * レコード全件取得処理（日付絞り込み実装）
 	 */
-	public List<ReportForm> findByCreatedDateBetween(String start, String end) {
+	public List<ReportForm> findByCreatedDateBetweenOrderByUpdatedDateDesc(String start, String end) {
 		Date startDate = null;
 		Date endDate = null;
 		try {
@@ -44,7 +44,7 @@ public class ReportService {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		List<Report> results = reportRepository.findByCreatedDateBetween(startDate, endDate);
+		List<Report> results = reportRepository.findByCreatedDateBetweenOrderByUpdatedDateDesc(startDate, endDate);
 		List<ReportForm> reports = setReportForm(results);
 		return reports;
 	}
@@ -59,6 +59,8 @@ public class ReportService {
 			Report result = results.get(i);
 			report.setId(result.getId());
 			report.setContent(result.getContent());
+			report.setCreated_date(result.getCreatedDate());
+			report.setUpdated_date(result.getUpdatedDate());
 			reports.add(report);
 		}
 		return reports;
@@ -79,6 +81,16 @@ public class ReportService {
 		Report report = new Report();
 		report.setId(reqReport.getId());
 		report.setContent(reqReport.getContent());
+		Date nowDate = null;
+		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		try{
+			Date date = new Date();
+			String dateTime = sdFormat.format(date);
+			nowDate = sdFormat.parse(dateTime +".999");
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		report.setUpdatedDate(nowDate);
 		return report;
 	}
 

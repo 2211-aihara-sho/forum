@@ -25,7 +25,7 @@ public class ForumController {
 	public ModelAndView top(@RequestParam(value = "start", required = false) String start,@RequestParam(value = "end", required = false) String end) {
 		ModelAndView mav = new ModelAndView();
 		// 投稿を全件取得（日付絞り込みあり）
-		List<ReportForm> contentData = reportService.findByCreatedDateBetween(start, end);
+		List<ReportForm> contentData = reportService.findByCreatedDateBetweenOrderByUpdatedDateDesc(start, end);
 		// コメントを全件取得
 		List<CommentForm> commentData = commentService.findAllComment();
 		// 画面遷移先を指定
@@ -115,6 +115,8 @@ public class ForumController {
 	public ModelAndView addComment(@ModelAttribute("CommentFormModel") CommentForm commentForm) {
 		// 投稿をテーブルに格納
 		commentService.saveComment(commentForm);
+		ReportForm report = reportService.editReport(commentForm.getReport_id());
+		reportService.saveReport(report);
 		// rootへリダイレクト
 		return new ModelAndView("redirect:/");
 	}
@@ -144,6 +146,8 @@ public class ForumController {
 		comment.setId(id);
 		// 編集した投稿を更新
 		commentService.saveComment(comment);
+		ReportForm report = reportService.editReport(comment.getReport_id());
+		reportService.saveReport(report);
 		// rootへリダイレクト
 		return new ModelAndView("redirect:/");
 	}
